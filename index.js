@@ -28,20 +28,26 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const userCollection = client.db('simplenode').collection('users');
-    const user = {name: 'mahi', email: 'mahi@gail.com'};
+    const userCollection = client.db("simplenode").collection("users");
+    // const user = { name: "mahi", email: "mahi@gail.com" };
     // const result = await userCollection.insertOne(user);
     // console.log(result);
 
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find({});
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+
+    
     app.post("/users", async (req, res) => {
-        const user = req.body;
-        user.id = users.length + 1;
-       const result = await userCollection.insertOne(user);
-       user.id = result.insertedId;
-        console.log(result)
-        res.send(user);
-        
-      });
+      const user = req.body;
+      user.id = users.length + 1;
+      const result = await userCollection.insertOne(user);
+      user._id = result.insertedId;
+      console.log(result);
+      res.send(user);
+    });
   } finally {
   }
 }
